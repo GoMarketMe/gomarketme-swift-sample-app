@@ -22,10 +22,6 @@ struct ContentView: View {
                 .foregroundStyle(.tint)
             Text("Hello, world!")
             
-            if isPurchased {
-                Text("Thank you for your purchase!")
-                    .foregroundColor(.green)
-            } else {
                 Button(action: {
                     Task {
                         await purchaseProduct()
@@ -43,6 +39,10 @@ struct ContentView: View {
                     Text("Purchase failed: \(error.localizedDescription)")
                         .foregroundColor(.red)
                 }
+            
+            if isPurchased {
+                Text("Thank you for your purchase!")
+                    .foregroundColor(.green)
             }
         }
         .padding()
@@ -74,6 +74,10 @@ struct ContentView: View {
                     isPurchased = true
                     print("Purchase successful for product ID: \(transaction.productID)")
                     await transaction.finish()
+                    
+                    // Sync the transaction (recommended)
+                    await goMarketMe.syncTransaction(transaction: transaction)
+                    
                 } else {
                     print("Purchase verification failed")
                     throw NSError(domain: "Purchase", code: 0, userInfo: [NSLocalizedDescriptionKey: "Purchase verification failed"])
