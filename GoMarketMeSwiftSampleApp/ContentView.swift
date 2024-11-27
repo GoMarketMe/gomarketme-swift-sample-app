@@ -76,6 +76,10 @@ struct ContentView: View {
                     await transaction.finish()
                     
                     // Sync the transaction (recommended)
+                    
+                    // Note: Use await goMarketMe.syncAllTransactions()
+                    // if you don't have access to the transaction.
+                    
                     await goMarketMe.syncTransaction(transaction: transaction)
                     
                 } else {
