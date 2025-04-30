@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		331BBA752CEA9CA400113E74 /* GoMarketMe in Frameworks */ = {isa = PBXBuildFile; productRef = 331BBA742CEA9CA400113E74 /* GoMarketMe */; };
+		3345115C2DC22C540057D763 /* GoMarketMe in Frameworks */ = {isa = PBXBuildFile; productRef = 3345115B2DC22C540057D763 /* GoMarketMe */; };
 		33584F632BF6B8B60099CEFA /* GoMarketMeSwiftSampleAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33584F622BF6B8B60099CEFA /* GoMarketMeSwiftSampleAppApp.swift */; };
 		33584F652BF6B8B60099CEFA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33584F642BF6B8B60099CEFA /* ContentView.swift */; };
 		33584F672BF6B8B70099CEFA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33584F662BF6B8B70099CEFA /* Assets.xcassets */; };
@@ -52,7 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				331BBA752CEA9CA400113E74 /* GoMarketMe in Frameworks */,
+				3345115C2DC22C540057D763 /* GoMarketMe in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,7 +146,7 @@
 			);
 			name = GoMarketMeSwiftSampleApp;
 			packageProductDependencies = (
-				331BBA742CEA9CA400113E74 /* GoMarketMe */,
+				3345115B2DC22C540057D763 /* GoMarketMe */,
 			);
 			productName = GoMarketMeSwiftSampleApp;
 			productReference = 33584F5F2BF6B8B60099CEFA /* GoMarketMeSwiftSampleApp.app */;
@@ -221,7 +221,7 @@
 			);
 			mainGroup = 33584F562BF6B8B60099CEFA;
 			packageReferences = (
-				331BBA732CEA9CA400113E74 /* XCRemoteSwiftPackageReference "gomarketme-swift" */,
+				3345115A2DC22C540057D763 /* XCRemoteSwiftPackageReference "gomarketme-swift" */,
 			);
 			productRefGroup = 33584F602BF6B8B60099CEFA /* Products */;
 			projectDirPath = "";
@@ -600,20 +600,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		331BBA732CEA9CA400113E74 /* XCRemoteSwiftPackageReference "gomarketme-swift" */ = {
+		3345115A2DC22C540057D763 /* XCRemoteSwiftPackageReference "gomarketme-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GoMarketMe/gomarketme-swift";
 			requirement = {
-				kind = exactVersion;
-				version = 2.0.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		331BBA742CEA9CA400113E74 /* GoMarketMe */ = {
+		3345115B2DC22C540057D763 /* GoMarketMe */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 331BBA732CEA9CA400113E74 /* XCRemoteSwiftPackageReference "gomarketme-swift" */;
+			package = 3345115A2DC22C540057D763 /* XCRemoteSwiftPackageReference "gomarketme-swift" */;
 			productName = GoMarketMe;
 		};
 /* End XCSwiftPackageProductDependency section */

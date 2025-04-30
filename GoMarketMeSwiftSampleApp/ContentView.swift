@@ -100,7 +100,7 @@ struct ContentView: View {
 
         do {
             // Step 1: Retrieve the product
-            guard let product = try await Product.products(for: ["ProductID1"]).first else {
+            guard let product = try await Product.products(for: ["Subscription1"]).first else {
                 print("Product not found")
                 purchaseInProgress = false
                 return
