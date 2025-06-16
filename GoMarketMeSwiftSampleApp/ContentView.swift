@@ -119,12 +119,8 @@ struct ContentView: View {
                     print("Purchase successful for product ID: \(transaction.productID)")
                     await transaction.finish()
                     
-                    // Sync the transaction (recommended)
-                    
-                    // Note: Use await goMarketMe.syncAllTransactions()
-                    // if you don't have access to the transaction.
-                    
-                    await goMarketMe.syncTransaction(transaction: transaction)
+                    // Sync the transactions (recommended)
+                    await goMarketMe.syncAllTransactions()
                     
                 } else {
                     print("Purchase verification failed")
