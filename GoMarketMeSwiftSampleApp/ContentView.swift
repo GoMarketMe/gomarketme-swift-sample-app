@@ -12,8 +12,29 @@ struct ContentView: View {
     @State private var purchaseError: Error?
     @State private var isOfferCodeRedemptionPresented = false
 
+    
+    // Basic
+    
+    /**
     init() {
         goMarketMe.initialize(apiKey: "API_KEY") // Initialize with your API key
+    }
+    **/
+    
+    // Advanced
+    
+    init() {
+        let sdk = GoMarketMe.shared
+
+        Task {
+            let data = await sdk.initialize(apiKey: "API_KEY") // Initialize with your API key
+
+            if let data {
+                print("Affiliate ID:", data.affiliate.id)
+                print("Affiliate %:", data.saleDistribution.affiliatePercentage)
+                print("Campaign ID:", data.campaign.id)
+            }
+        }
     }
     
     var body: some View {
@@ -22,6 +43,24 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+            if let data = goMarketMe.affiliateMarketingData {
+                if !data.affiliate.id.isEmpty {
+                    Text("Affiliate ID: \(data.affiliate.id)")
+                }
+                if !data.saleDistribution.affiliatePercentage.isEmpty {
+                    Text("Affiliate Rev Share: \(data.saleDistribution.affiliatePercentage)%")
+                }
+                if !data.campaign.id.isEmpty {
+                    Text("Campaign ID: \(data.campaign.id)")
+                }
+            } else if goMarketMe.isInitializing {
+                Text("Initializing GoMarketMe...")
+            } else {
+                Text("No affiliate data")
+            }
+            Spacer()
+                .frame(height: 25)
+
             
             Button(action: {
                 Task {
@@ -118,10 +157,9 @@ struct ContentView: View {
                     isPurchased = true
                     print("Purchase successful for product ID: \(transaction.productID)")
                     await transaction.finish()
-                    
-                    // Sync the transactions (recommended)
+
+                    // Sync the transactions (deprecated / no longer needed)
                     await goMarketMe.syncAllTransactions()
-                    
                 } else {
                     print("Purchase verification failed")
                     throw NSError(domain: "Purchase", code: 0, userInfo: [NSLocalizedDescriptionKey: "Purchase verification failed"])
