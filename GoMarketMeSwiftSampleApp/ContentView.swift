@@ -156,10 +156,11 @@ struct ContentView: View {
                     // Update purchase status
                     isPurchased = true
                     print("Purchase successful for product ID: \(transaction.productID)")
-                    await transaction.finish()
 
-                    // Sync the transactions (deprecated / no longer needed)
+                    // Sync the transactions
                     await goMarketMe.syncAllTransactions()
+
+                    await transaction.finish()
                 } else {
                     print("Purchase verification failed")
                     throw NSError(domain: "Purchase", code: 0, userInfo: [NSLocalizedDescriptionKey: "Purchase verification failed"])
