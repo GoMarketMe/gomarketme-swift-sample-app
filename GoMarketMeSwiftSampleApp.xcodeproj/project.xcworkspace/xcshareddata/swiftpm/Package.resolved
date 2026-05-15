@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/GoMarketMe/gomarketme-swift.git",
       "state" : {
-        "revision" : "5038272805e3537a43d679fe898f3e3118fd16fe",
-        "version" : "5.0.3"
+        "revision" : "59c38965c5d26643c53877adff77af447d175efc",
+        "version" : "5.0.4"
       }
     }
   ],
