@@ -11,6 +11,8 @@ struct ContentView: View {
     @State private var syncInProgress = false
     @State private var syncMessage: SampleMessage?
     @State private var referralMessage: SampleMessage?
+    @State private var referralCodeInput = ""
+    @State private var referralCodeInProgress = false
     @State private var isOfferCodeRedemptionPresented = false
 
     private let apiKey = "API_KEY"
@@ -42,9 +44,17 @@ struct ContentView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label("GoMarketMe Swift SDK", systemImage: "link.circle.fill")
-                .font(.title.bold())
-                .foregroundStyle(.tint)
+            HStack(spacing: 10) {
+                Image("GoMarketMeLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                    .accessibilityLabel("GoMarketMe logo")
+
+                Text("GoMarketMe Swift SDK")
+                    .font(.title.bold())
+                    .foregroundStyle(.tint)
+            }
 
             Text("Sample integration · SDK \(GoMarketMe.sdkVersion)")
                 .font(.subheadline)
@@ -102,6 +112,20 @@ struct ContentView: View {
                     referralMessage = .error(error.localizedDescription)
                 }
             )
+
+            Divider()
+
+            Text("Custom referral-code UI")
+                .font(.headline)
+            TextField("Referral code", text: $referralCodeInput)
+                .textFieldStyle(.roundedBorder)
+                .textInputAutocapitalization(.characters)
+                .autocorrectionDisabled()
+            Button(referralCodeInProgress ? "Applying…" : "Apply referral code") {
+                Task { await redeemReferralCode() }
+            }
+            .buttonStyle(.bordered)
+            .disabled(!goMarketMe.isInitialized || referralCodeInProgress || nonEmpty(referralCodeInput) == nil)
 
             if let referralMessage {
                 MessageView(message: referralMessage)
@@ -175,6 +199,9 @@ struct ContentView: View {
                 KeyValueRow(label: "Attribution", value: attributionSource(for: data))
                 KeyValueRow(label: "Affiliate ID", value: data.affiliate.id)
                 KeyValueRow(label: "Campaign ID", value: data.campaign.id)
+                if let deviceID = nonEmpty(data.deviceId) {
+                    KeyValueRow(label: "Device ID", value: deviceID)
+                }
                 KeyValueRow(
                     label: "Affiliate share",
                     value: data.saleDistribution.affiliatePercentage.isEmpty
@@ -183,6 +210,12 @@ struct ContentView: View {
                 )
                 KeyValueRow(label: "Referral code", value: nonEmpty(data.referralCode) ?? "—")
                 KeyValueRow(label: "Apple offer code", value: nonEmpty(data.offerCode) ?? "—")
+                KeyValueRow(label: "Campaign metadata", value: metadataJSON(data.campaign.metadata))
+                KeyValueRow(label: "Affiliate metadata", value: metadataJSON(data.affiliate.metadata))
+                KeyValueRow(
+                    label: "Affiliate campaign metadata",
+                    value: metadataJSON(data.affiliateCampaign.metadata)
+                )
 
                 Text("This device is attributed. A referral code cannot replace the existing attribution.")
                     .font(.caption)
@@ -268,6 +301,50 @@ struct ContentView: View {
         case .failure(let error):
             print("Offer-code redemption failed: \(error.localizedDescription)")
         }
+    }
+
+    @MainActor
+    private func redeemReferralCode() async {
+        guard let code = nonEmpty(referralCodeInput) else { return }
+        referralCodeInProgress = true
+        defer { referralCodeInProgress = false }
+        do {
+            let data = try await goMarketMe.redeemReferralCode(code)
+            referralCodeInput = ""
+            referralMessage = .success("Referral code \(data.referralCode ?? code) applied.")
+        } catch let error as GoMarketMeReferralCodeError {
+            referralMessage = .error(referralErrorMessage(error))
+        } catch {
+            referralMessage = .error(error.localizedDescription)
+        }
+    }
+
+    private func referralErrorMessage(_ error: GoMarketMeReferralCodeError) -> String {
+        switch error.code {
+        case .invalidCode:
+            return "That referral code is not valid. Check it and try again."
+        case .expiredCode:
+            return "That referral code has expired."
+        case .inactiveCode:
+            return "That referral code is no longer active."
+        case .networkError, .timeout:
+            return "Could not connect. Check your connection and try again."
+        case .notInitialized:
+            return "Referral codes are not ready yet. Please try again."
+        default:
+            return error.isRetryable
+                ? "Could not apply the referral code. Please try again."
+                : error.message
+        }
+    }
+
+    private func metadataJSON(_ metadata: GoMarketMeMetadata) -> String {
+        guard !metadata.isEmpty,
+              let data = try? JSONEncoder().encode(metadata),
+              let value = String(data: data, encoding: .utf8) else {
+            return "{}"
+        }
+        return value
     }
 
     @MainActor
